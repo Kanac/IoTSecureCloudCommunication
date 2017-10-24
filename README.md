@@ -1,2 +1,2 @@
 # IoTSecureCloudCommunication
-UBC ECE Capstone Project 23
+UBC Engineering Capstone Project
