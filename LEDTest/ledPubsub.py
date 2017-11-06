@@ -19,18 +19,8 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
 import time
 import argparse
-
-#import RPi.GPIO as GPIO
-#import time
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setwarnings(False)
-#GPIO.setup(18,GPIO.OUT)
-#print "LED on"
-#GPIO.output(18,GPIO.HIGH)
-#time.sleep(1)
-#print "LED off"
-#GPIO.output(18,GPIO.LOW)
-
+import RPi.GPIO as GPIO
+import time
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
@@ -39,9 +29,11 @@ def customCallback(client, userdata, message):
     print("from topic: ")
     print(message.topic)
     if(int(message.payload) % 2 == 0):
-        print("LED ON");
+        print("LED ON")
+        GPIO.output(18,GPIO.HIGH);
     else:
-        print("LED OFF");
+        print("LED OFF")
+        GPIO.output(18,GPIO.LOW)
     print("--------------\n\n")
 
 
@@ -56,7 +48,6 @@ parser.add_argument("-w", "--websocket", action="store_true", dest="useWebsocket
 parser.add_argument("-id", "--clientId", action="store", dest="clientId", default="basicPubSub",
                     help="Targeted client id")
 parser.add_argument("-t", "--topic", action="store", dest="topic", default="sdk/test/Python", help="Targeted topic")
-
 args = parser.parse_args()
 host = args.host
 rootCAPath = args.rootCAPath
@@ -81,6 +72,11 @@ streamHandler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 streamHandler.setFormatter(formatter)
 logger.addHandler(streamHandler)
+
+# Init LED
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(18,GPIO.OUT)
 
 # Init AWSIoTMQTTClient
 myAWSIoTMQTTClient = None
